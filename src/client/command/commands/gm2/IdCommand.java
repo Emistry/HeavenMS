@@ -13,7 +13,7 @@ import server.ThreadManager;
 
 public class IdCommand extends Command {
     {
-        setDescription("");
+        setDescription("Search for item id of an item.");
     }
 
     private final Map<String, String> handbookDirectory = new HashMap<>();
@@ -24,18 +24,39 @@ public class IdCommand extends Command {
         handbookDirectory.put("etc", "handbook/Etc.txt");
         handbookDirectory.put("npc", "handbook/NPC.txt");
         handbookDirectory.put("use", "handbook/Use.txt");
-        handbookDirectory.put("weapon", "handbook/Equip/Weapon.txt"); // TODO add more into this
+        handbookDirectory.put("accessory", "handbook/Equip/Accessory.txt");
+        handbookDirectory.put("cap", "handbook/Equip/Cap.txt");
+        handbookDirectory.put("cape", "handbook/Equip/Cape.txt");
+        handbookDirectory.put("coat", "handbook/Equip/Coat.txt");
+        handbookDirectory.put("face", "handbook/Equip/Face.txt");
+        handbookDirectory.put("glove", "handbook/Equip/Glove.txt");
+        handbookDirectory.put("hair", "handbook/Equip/Hair.txt");
+        handbookDirectory.put("longcoat", "handbook/Equip/Longcoat.txt");
+        handbookDirectory.put("pants", "handbook/Equip/pants.txt");
+        handbookDirectory.put("petequip", "handbook/Equip/PetEquip.txt");
+        handbookDirectory.put("ring", "handbook/Equip/Ring.txt");
+        handbookDirectory.put("shield", "handbook/Equip/Shield.txt");
+        handbookDirectory.put("shoes", "handbook/Equip/Shoes.txt");
+        handbookDirectory.put("taming", "handbook/Equip/Taming.txt");
+        handbookDirectory.put("weapon", "handbook/Equip/Weapon.txt"); 
+        // TODO: add more into this
     }
 
     @Override
     public void execute(MapleClient client, final String[] params) {
         final MapleCharacter player = client.getPlayer();
         if (params.length < 2) {
-            player.yellowMessage("Syntax: !id <type> <query>");
+            StringBuilder type = new StringBuilder();
+            for (Map.Entry<String, String> entry: handbookDirectory.entrySet()) {
+                if (type.length() > 0)
+                    type.append("|");
+                type.append(entry.getKey());
+            }
+            player.yellowMessage("Syntax: !id <" + type + "> <query>");
             return;
         }
         final String queryItem = joinStringArr(Arrays.copyOfRange(params, 1, params.length), " ");
-        player.yellowMessage("Querying for entry... May take some time... Please try to refine your search.");
+        player.yellowMessage("Querying for '" + String.join(" ", params) + "'... May take some time...");
         Runnable queryRunnable = new Runnable() {
             @Override
             public void run() {
@@ -48,7 +69,7 @@ public class IdCommand extends Command {
                     if (resultList.size() > 0) {
                         int count = 0;
                         for (Map.Entry<String, String> entry: resultList.entrySet()) {
-                            sb.append(String.format("Id for %s is: #b%s#k", entry.getKey(), entry.getValue()) + "\r\n");
+                            sb.append(String.format("#v%s# %s - #t%s#\r\n", entry.getValue(), entry.getValue(), entry.getValue()));
                             if (++count > 100) {
                                 break;
                             }
