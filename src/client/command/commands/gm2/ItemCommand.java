@@ -46,7 +46,13 @@ public class ItemCommand extends Command {
             return;
         }
 
-        int itemId = Integer.parseInt(params[0]);
+        int itemId = 0;
+        try {
+            itemId = Integer.parseInt(params[0]);
+        } catch (NumberFormatException e) {
+            player.yellowMessage("Item id '" + params[0] + "' is not a valid item id.");
+            return;
+        }
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
 
         if(ii.getName(itemId) == null) {
@@ -55,7 +61,14 @@ public class ItemCommand extends Command {
         }
 
         short quantity = 1;
-        if(params.length >= 2) quantity = Short.parseShort(params[1]);
+        if(params.length >= 2) {
+            try {
+                quantity = Short.parseShort(params[1]);
+            } catch (NumberFormatException e) {
+                player.yellowMessage("Value '" + params[1] + "' is not a valid amount.");
+                return;
+            }
+        }
 
         if (YamlConfig.config.server.BLOCK_GENERATE_CASH_ITEM && ii.isCash(itemId)) {
             player.yellowMessage("You cannot create a cash item with this command.");
