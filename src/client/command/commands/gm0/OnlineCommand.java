@@ -31,19 +31,27 @@ import net.server.channel.Channel;
 
 public class OnlineCommand extends Command {
     {
-        setDescription("");
+        setDescription("Display a list of online players of each channels.");
     }
 
     @Override
     public void execute(MapleClient c, String[] params) {
         MapleCharacter player = c.getPlayer();
+        int totalPlayerCount = 0;
         for (Channel ch : Server.getInstance().getChannelsFromWorld(player.getWorld())) {
             player.yellowMessage("Players in Channel " + ch.getId() + ":");
             for (MapleCharacter chr : ch.getPlayerStorage().getAllCharacters()) {
-                if (!chr.isGM()) {
-                    player.message(" >> " + MapleCharacter.makeMapleReadable(chr.getName()) + " is at " + chr.getMap().getMapName() + ".");
+                if (chr.gmLevel() <= player.gmLevel()) {
+                    if (chr.isGM()) {
+                        player.message(" >> " + MapleCharacter.makeMapleReadable(chr.getName()) + " (GM: " + chr.gmLevel() + ") is at " + chr.getMap().getMapName() + ".");
+                    }
+                    else {
+                        player.message(" >> " + MapleCharacter.makeMapleReadable(chr.getName()) + " is at " + chr.getMap().getMapName() + ".");
+                    }
+                    totalPlayerCount++;
                 }
             }
         }
+        player.yellowMessage("Total Player Online: " + totalPlayerCount + ".");
     }
 }
