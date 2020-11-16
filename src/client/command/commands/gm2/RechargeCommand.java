@@ -33,28 +33,21 @@ import server.MapleItemInformationProvider;
 
 public class RechargeCommand extends Command {
     {
-        setDescription("");
+        setDescription("Replenish rechargeable items.");
     }
 
     @Override
     public void execute(MapleClient c, String[] params) {
         MapleCharacter player = c.getPlayer();
+        int itemCount = 0;
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        for (Item torecharge : c.getPlayer().getInventory(MapleInventoryType.USE).list()) {
-            if (ItemConstants.isThrowingStar(torecharge.getItemId())){
-                torecharge.setQuantity(ii.getSlotMax(c, torecharge.getItemId()));
-                c.getPlayer().forceUpdateItem(torecharge);
-            } else if (ItemConstants.isArrow(torecharge.getItemId())){
-                torecharge.setQuantity(ii.getSlotMax(c, torecharge.getItemId()));
-                c.getPlayer().forceUpdateItem(torecharge);
-            } else if (ItemConstants.isBullet(torecharge.getItemId())){
-                torecharge.setQuantity(ii.getSlotMax(c, torecharge.getItemId()));
-                c.getPlayer().forceUpdateItem(torecharge);
-            } else if (ItemConstants.isConsumable(torecharge.getItemId())){
-                torecharge.setQuantity(ii.getSlotMax(c, torecharge.getItemId()));
-                c.getPlayer().forceUpdateItem(torecharge);
+        for (Item item : c.getPlayer().getInventory(MapleInventoryType.USE).list()) {
+            if (ItemConstants.isRechargeable(item.getItemId())) {
+                item.setQuantity(ii.getSlotMax(c, item.getItemId()));
+                c.getPlayer().forceUpdateItem(item);
+                itemCount++;
             }
         }
-        player.dropMessage(5, "USE Recharged.");
+        player.dropMessage(5, "Total Item Recharged: " + itemCount);
     }
 }
