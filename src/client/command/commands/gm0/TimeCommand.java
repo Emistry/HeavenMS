@@ -33,12 +33,12 @@ import java.util.TimeZone;
 
 public class TimeCommand extends Command {
     {
-        setDescription("");
+        setDescription("Display current server date and time.");
     }
     
     @Override
     public void execute(MapleClient client, String[] params) {
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss aa");
         dateFormat.setTimeZone(TimeZone.getDefault());
         client.getPlayer().yellowMessage("HeavenMS Server Time: " + dateFormat.format(new Date()));
     }
