@@ -26,21 +26,31 @@ package client.command.commands.gm1;
 import client.MapleCharacter;
 import client.command.Command;
 import client.MapleClient;
+import constants.game.GameConstants;
 import server.life.MapleMonster;
 
 public class MobHpCommand extends Command {
     {
-        setDescription("");
+        setDescription("Show list of monster's HP.");
     }
 
     @Override
     public void execute(MapleClient c, String[] params) {
         MapleCharacter player = c.getPlayer();
+        int totalMonsterCount = 0;
         for(MapleMonster monster : player.getMap().getAllMonsters()) {
             if (monster != null && monster.getHp() > 0) {
-                player.yellowMessage(monster.getName() + " (" + monster.getId() + ") has " + monster.getHp() + " / " + monster.getMaxHp() + " HP.");
-
+                if (params.length == 0 // list all monsters
+                    || (params.length > 0 && monster.getName().toLowerCase().contains(String.join(" ", params))) // filter by monster name
+                ) {
+                    int currentHp = monster.getHp();
+                    int currentMaxHp = monster.getMaxHp();
+                    long hpPercent = (currentHp * 100L / currentMaxHp);
+                    player.yellowMessage(monster.getName() + " (" + monster.getId() + ") has " + GameConstants.numberWithCommas(currentHp) + " / " + GameConstants.numberWithCommas(currentMaxHp) + " HP (" + hpPercent + "%)");
+                    totalMonsterCount++;
+                } 
             }
         }
+        player.yellowMessage("Total Monster found: "+ totalMonsterCount);
     }
 }
