@@ -26,10 +26,11 @@ package client.command.commands.gm3;
 import client.command.Command;
 import client.MapleClient;
 import client.MapleCharacter;
+import constants.game.GameConstants;
 
 public class GiveMesosCommand extends Command {
     {
-        setDescription("");
+        setDescription("Give meso to player.");
     }
 
     @Override
@@ -66,12 +67,19 @@ public class GiveMesosCommand extends Command {
             }
         }
         
-        MapleCharacter victim = c.getWorldServer().getPlayerStorage().getCharacterByName(recv_);
-        if (victim != null) {
-            victim.gainMeso((int) mesos_, true);
-            player.message("MESO given.");
-        } else {
-            player.message("Player '" + recv_ + "' could not be found.");
+        if (mesos_ != 0) {
+            MapleCharacter victim = c.getWorldServer().getPlayerStorage().getCharacterByName(recv_);
+            if (victim != null) {
+                victim.gainMeso((int) mesos_, true);
+                if (player.getName().equals(victim.getName())) {
+                    player.message("You have received " + GameConstants.numberWithCommas((int)mesos_) + " meso.");
+                }
+                else {
+                    player.message("Player '" + recv_ + "' received " + GameConstants.numberWithCommas((int)mesos_) + " meso.");
+                }
+            } else {
+                player.message("Player '" + recv_ + "' could not be found.");
+            }
         }
     }
 }
